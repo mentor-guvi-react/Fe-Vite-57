@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { Grid, TextField } from "@mui/material";
+import axios from "axios";
 
 const defaultformState = {
   username: "",
@@ -16,7 +17,50 @@ const defaultformState = {
 const RegistrationModal = ({ handleClose, open, modalType }) => {
   const [formState, setFormState] = React.useState(defaultformState);
 
-  console.log(formState, "formState");
+  const handleValidation = () => {
+    const { address, password, email, username, phonenumber } = formState;
+
+    if (
+      address.length &&
+      password.length &&
+      email.length &&
+      username.length &&
+      phonenumber.length
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (modalType === "login") {
+      if (formState.username.length && formState.password.length) {
+        const response = await axios.get(
+          `http://localhost:4001/login?username=${formState.username}&password=${formState.password}`
+        );
+
+        if (response.data) {
+          localStorage.setItem("username", response.data);
+          handleClose();
+        }
+      }
+    } else {
+      if (handleValidation()) {
+        const response = await axios.post(
+          "http://localhost:4001/registration",
+          {
+            ...formState,
+          }
+        );
+
+        if (response.data !== "error") {
+          localStorage.setItem("username", response.data.username);
+          handleClose();
+        }
+      }
+    }
+  };
 
   const style = {
     position: "absolute",
@@ -123,7 +167,7 @@ const RegistrationModal = ({ handleClose, open, modalType }) => {
             <Button variant="contained" color="primary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={handleSubmit}>
               {modalType === "register" ? ` Register` : "Login"}
             </Button>
           </Grid>
@@ -132,6 +176,5 @@ const RegistrationModal = ({ handleClose, open, modalType }) => {
     </Modal>
   );
 };
-
 
 export default RegistrationModal;

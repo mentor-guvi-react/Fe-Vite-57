@@ -1,6 +1,6 @@
 import {
   AppBar,
-  Grid, 
+  Grid,
   Autocomplete,
   TextField,
   FormControl,
@@ -23,6 +23,8 @@ export default function MyNavBar() {
 
   const navigate = useNavigate();
 
+  const username = localStorage.getItem("username");
+
   return (
     <AppBar color="transparent" position="static">
       <Grid
@@ -42,7 +44,6 @@ export default function MyNavBar() {
             options={locationNames}
             sx={{ width: 300 }}
             onSelect={(e) => {
-              console.log(e.target.value, "e e e");
               const location = e.target.value;
               location && navigate(`/${location}`);
             }}
@@ -66,28 +67,52 @@ export default function MyNavBar() {
             />
           </FormControl>
         </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
-            onClick={() => {
-              setModalOpen(true);
-              setModalType("register");
-            }}
-          >
-            Sign Up
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
-            onClick={() => {
-              setModalOpen(true);
-              setModalType("login");
-            }}
-          >
-            Login
-          </Button>
-        </Grid>
+
+        {!username?.length ? (
+          <>
+            <Grid item>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setModalOpen(true);
+                  setModalType("register");
+                }}
+              >
+                Sign Up
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setModalOpen(true);
+                  setModalType("login");
+                }}
+              >
+                Login
+              </Button>
+            </Grid>
+          </>
+        ) : (
+          <>
+            <Grid item>
+              <Button variant="contained" onClick={() => {}}>
+                Your Booking
+              </Button>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  localStorage.removeItem("username");
+                  window.location.reload();
+                }}
+              >
+                Log out
+              </Button>
+            </Grid>
+          </>
+        )}
       </Grid>
 
       <div style={{ border: "1px solid rgb(199 199 199 / 40%)" }}></div>

@@ -12,6 +12,7 @@ import {
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 import Filter from "./Filter";
+import BookingCards from "./BookingCards";
 import { sortData } from "./Constants";
 
 import { useParams } from "react-router-dom";
@@ -25,24 +26,24 @@ export default function BookingInformation() {
       spacing={2}
       style={{
         margin: "auto",
-        maxWidth: 1450,
+        maxWidth: 2450,
       }}
     >
       <Grid item lg={3}>
         <Filter />
       </Grid>
-      <Grid item lg={7}>
-        {Locationcrumbs()}
+      <Grid item lg={8}>
+        {Locationcrumbs(location)}
 
         <Grid
           container
-          spacing={2}
+          // spacing={2}
           justifyContent={"space-between"}
           alignItems={"center"}
         >
           <Grid item>
             <Typography variant="h5">
-              Best Restaurants Near Me in Delhi (23057)
+              Best Restaurants Near Me in {location} (23057)
             </Typography>
           </Grid>
 
@@ -71,18 +72,22 @@ export default function BookingInformation() {
             </Grid>
           </Grid>
         </Grid>
+
+        <Grid item>
+          <BookingCards location={location} />
+        </Grid>
       </Grid>
     </Grid>
   );
 }
 
-const Locationcrumbs = () => {
+const Locationcrumbs = (location) => {
   const breadcrumbs = [
     <Link underline="hover" key="1" color="inherit" href="/" onClick={() => {}}>
-      Chennai
+      {location}
     </Link>,
     <Typography key="3" color="text.primary">
-      Chennai Restaurents
+      {location} Restaurents
     </Typography>,
   ];
 
@@ -95,3 +100,5 @@ const Locationcrumbs = () => {
     </Breadcrumbs>
   );
 };
+
+// master obj -> many locations -> each location has many hotels -> hotel details
