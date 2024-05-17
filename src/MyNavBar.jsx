@@ -11,6 +11,8 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 
 import RegistrationModal from "./RegistrationModal";
+import MyBookingModal from "./MyBookingModal";
+
 import { useState } from "react";
 
 import { locationNames } from "./Constants";
@@ -20,6 +22,8 @@ import { useNavigate } from "react-router-dom";
 export default function MyNavBar() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
+
+  const [openMybookingModal, setOpenMybookingModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -32,6 +36,7 @@ export default function MyNavBar() {
         justifyContent={"center"}
         alignItems={"center"}
         marginBottom={"10px"}
+        marginTop={"10px"}
         spacing={2}
       >
         <Grid item>
@@ -47,7 +52,9 @@ export default function MyNavBar() {
               const location = e.target.value;
               location && navigate(`/${location}`);
             }}
-            renderInput={(params) => <TextField {...params} label="Location" />}
+            renderInput={(params) => (
+              <TextField {...params} label="Location" style={{ height: 60 }} />
+            )}
           />
         </Grid>
         <Grid item>
@@ -61,7 +68,7 @@ export default function MyNavBar() {
               }
               endAdornment={
                 <InputAdornment position="start">
-                  <Button variant="contained">Search</Button>
+                  <Button variant="text">Search</Button>
                 </InputAdornment>
               }
             />
@@ -96,7 +103,12 @@ export default function MyNavBar() {
         ) : (
           <>
             <Grid item>
-              <Button variant="contained" onClick={() => {}}>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setOpenMybookingModal(true);
+                }}
+              >
                 Your Booking
               </Button>
             </Grid>
@@ -126,6 +138,15 @@ export default function MyNavBar() {
         }}
         modalType={modalType}
       />
+
+      {openMybookingModal && (
+        <MyBookingModal
+          openMybookingModal={openMybookingModal}
+          handleMyBookingClose={() => {
+            setOpenMybookingModal(false);
+          }}
+        />
+      )}
     </AppBar>
   );
 }

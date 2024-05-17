@@ -22,10 +22,14 @@ import { useState } from "react";
 
 const BookingCards = ({ location }) => {
   const [open, setOpen] = useState(false);
-
-  console.log(location, "location");
+  const [selectedHotel, setselectedHotel] = useState("");
 
   const searchedLocation = location.toLowerCase();
+
+  const handleCardClick = (id) => {
+    setOpen(true);
+    setselectedHotel(id);
+  };
 
   //   const obj = { a: {} };
   //   console.log(obj?.a?.b?.c, "obj.a.b.c");
@@ -35,7 +39,11 @@ const BookingCards = ({ location }) => {
       <Grid container spacing={4}>
         {restaurant[searchedLocation]?.map((hotelDetail) => {
           return (
-            <Grid onClick={() => setOpen(true)} item key={Math.random()}>
+            <Grid
+              onClick={() => handleCardClick(hotelDetail.id)}
+              item
+              key={Math.random()}
+            >
               <Card style={{ cursor: "pointer" }} sx={{ maxWidth: 325 }}>
                 <div style={{ position: "relative" }}>
                   <CardMedia
@@ -80,6 +88,7 @@ const BookingCards = ({ location }) => {
         })}
 
         <BookingModal
+          selectedHotel={selectedHotel}
           open={open}
           handleClose={() => {
             setOpen(false);

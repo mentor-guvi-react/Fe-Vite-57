@@ -10,17 +10,72 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
-const BookingModal = ({ open, handleClose }) => {
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "1px solid grey",
-    boxShadow: 12,
-    p: 4,
+import BookingSlots from "./BookingSlots";
+import axios from "axios";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "1px solid grey",
+  boxShadow: 12,
+  p: 4,
+  paddingRight: 0,
+  paddingTop: 0,
+};
+
+const BookingModal = ({ open, handleClose, selectedHotel = "" }) => {
+  const [BookingState, setBookingState] = React.useState({
+    selectedDate: "",
+    selectedSeats: 0,
+    selectedSlot: "",
+  });
+
+  const username = localStorage.getItem("username");
+
+  console.log(BookingState, "BookingState");
+
+  const handleDateChange = (date) => {
+    const day = new Date(date).getDate();
+    const year = new Date(date).getFullYear();
+    const month = new Date(date).getMonth() + 1;
+
+    setBookingState({
+      ...BookingState,
+      selectedDate: `${year}-${month}-${day}`,
+    });
+  };
+
+  const makeBooking = async () => {
+    console.log({
+      selectedHotel,
+      username,
+      ...BookingState,
+    });
+    const {
+      selectedDate = "",
+      selectedSeats = "",
+      selectedSlot = "",
+    } = BookingState;
+    if (
+      selectedDate.length &&
+      selectedHotel.length &&
+      selectedSeats > 0 &&
+      selectedSlot.length &&
+      username.length
+    ) {
+      const response = await axios.post("http://localhost:4001/createBooking", {
+        selectedHotel,
+        username,
+        ...BookingState,
+      });
+      if (response !== "error") {
+        handleClose();
+      }
+    }
   };
 
   return (
@@ -31,14 +86,25 @@ const BookingModal = ({ open, handleClose }) => {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <Grid container direction={"column"}>
-          <Grid item>
-            <Typography>Select an Offer or Deal</Typography>
+        <Grid
+          container
+          direction={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          spacing={4}
+        >
+          <Grid item width={"100%"} style={{ background: "black" }}>
+            <Typography variant="h5" textAlign={"center"} color={"white"}>
+              Select an Offer or Deal
+            </Typography>
           </Grid>
 
-          <Grid item>
-            <Typography>Select Seats</Typography>
+          <Grid item width={"90%"}>
+            <Typography textAlign={"center"}>Select Seats</Typography>
             <Slider
+              onChange={(e, value) =>
+                setBookingState({ ...BookingState, selectedSeats: value })
+              }
               valueLabelDisplay="auto"
               defaultValue={0}
               step={1}
@@ -48,13 +114,54 @@ const BookingModal = ({ open, handleClose }) => {
             />
           </Grid>
 
+          <Grid item width={"100%"}>
+            <Grid
+              container
+              width={"100%"}
+              alignItems={"center"}
+              justifyContent={"center"}
+            >
+              <Typography textAlign={"center"}>Select Date</Typography>
+              <Grid
+                item
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+                width={"100%"}
+              >
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={["DatePicker"]}>
+                    <DatePicker
+                      onChange={handleDateChange}
+                      disablePast
+                      label="Pick Your Date"
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid item width={"100%"}>
+            <BookingSlots
+              BookingState={BookingState}
+              setBookingState={setBookingState}
+            />
+          </Grid>
+
           <Grid item>
-            <Typography>Select Date</Typography>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["DatePicker"]}>
-                <DatePicker label="Basic date picker" />
-              </DemoContainer>
-            </LocalizationProvider>
+            <Button
+              color="info"
+              variant="contained"
+              style={{ marginRight: 10 }}
+              onClick={makeBooking}
+            >
+              Book
+            </Button>
+            <Button color="error" variant="contained" onClick={handleClose}>
+              Cancel
+            </Button>
           </Grid>
         </Grid>
       </Box>
