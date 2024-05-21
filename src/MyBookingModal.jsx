@@ -45,7 +45,7 @@ export default function MyBookingModal({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchMyBooking = async () => {
     const response = await axios.get(
-      "http://localhost:4001/mybookings?username=" + username
+      "https://fe-node-57.onrender.com/mybookings?username=" + username
     );
 
     if (response.data !== "error") {
@@ -76,7 +76,7 @@ export default function MyBookingModal({
   };
 
   const handleCancel = async (bookingId) => {
-    const response = await axios.post("http://localhost:4001/cancelBooking", {
+    const response = await axios.post("https://fe-node-57.onrender.com/cancelBooking", {
       bookingId,
     });
     if (response.data === "Cancelled Booking") {

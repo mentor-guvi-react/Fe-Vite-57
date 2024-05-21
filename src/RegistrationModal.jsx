@@ -43,7 +43,7 @@ const RegistrationModal = ({ handleClose, open, modalType }) => {
     if (modalType === "login") {
       if (formState.username.length && formState.password.length) {
         const response = await axios.get(
-          `http://localhost:4001/login?username=${formState.username}&password=${formState.password}`
+          `https://fe-node-57.onrender.com/login?username=${formState.username}&password=${formState.password}`
         );
 
         if (response.data !== "error") {
@@ -63,7 +63,7 @@ const RegistrationModal = ({ handleClose, open, modalType }) => {
     } else {
       if (handleValidation()) {
         const response = await axios.post(
-          "http://localhost:4001/registration",
+          "https://fe-node-57.onrender.com/registration",
           {
             ...formState,
           }

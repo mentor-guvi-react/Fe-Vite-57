@@ -61,7 +61,7 @@ const BookingModal = ({ open, handleClose, selectedHotel = "" }) => {
       selectedSlot.length &&
       username.length
     ) {
-      const response = await axios.post("http://localhost:4001/createBooking", {
+      const response = await axios.post("https://fe-node-57.onrender.com/createBooking", {
         selectedHotel,
         username,
         ...BookingState,
