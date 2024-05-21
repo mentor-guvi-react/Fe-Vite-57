@@ -8,7 +8,7 @@ import { Button, FormGroup, FormControlLabel, Checkbox } from "@mui/material";
 
 import { quickFilter, tagsFilter, cuisniesFilter } from "./Constants";
 
-const Filter = () => {
+const Filter = ({ handleTagChange }) => {
   return (
     <div>
       <Accordion>
@@ -24,9 +24,11 @@ const Filter = () => {
             {quickFilter.map((ele, index) => {
               return (
                 <FormControlLabel
+                  value={ele}
                   key={index}
                   control={<Checkbox />}
                   label={ele}
+                  onChange={handleTagChange}
                 ></FormControlLabel>
               );
             })}
@@ -46,9 +48,11 @@ const Filter = () => {
             {cuisniesFilter.map((ele, index) => {
               return (
                 <FormControlLabel
+                  value={ele}
                   key={index}
                   control={<Checkbox />}
                   label={ele}
+                  onChange={handleTagChange}
                 ></FormControlLabel>
               );
             })}
@@ -69,8 +73,10 @@ const Filter = () => {
               return (
                 <FormControlLabel
                   key={index}
+                  value={ele}
                   control={<Checkbox />}
                   label={ele}
+                  onChange={handleTagChange}
                 ></FormControlLabel>
               );
             })}

@@ -13,12 +13,44 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
 import Filter from "./Filter";
 import BookingCards from "./BookingCards";
-import { sortData } from "./Constants";
+import { restaurant, sortData } from "./Constants";
 
 import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-export default function BookingInformation() {
+import axios from "axios";
+
+export default function BookingInformation({ seachedHotel }) {
   const { location = "Delhi" } = useParams();
+
+  const hotelCount = restaurant[location?.toLowerCase()]?.length || 0;
+
+  const [filteredTags, setFilteredTags] = useState([]);
+  const [sortedType, setSortedType] = useState("Ratings");
+
+  const [apiHotelList, setapiHotelList] = useState([]);
+
+  useEffect(() => {
+    fetchHotels();
+  }, []);
+
+  const fetchHotels = async () => {
+    const response = await axios.get(
+      "https://fe-node-57.onrender.com/fetchHotels?location=" + location.toLowerCase()
+    );
+    console.log(response.data, "response ");
+    setapiHotelList(response.data);
+  };
+
+  const handleTagChange = (event) => {
+    const filteredValue = [...filteredTags, event.target.value];
+    setFilteredTags(filteredValue);
+  };
+
+  const handleSortChange = (event) => {
+    console.log(event.target.value);
+    setSortedType(event.target.value);
+  };
 
   return (
     <Grid
@@ -30,7 +62,7 @@ export default function BookingInformation() {
       }}
     >
       <Grid item lg={3}>
-        <Filter />
+        <Filter handleTagChange={handleTagChange} />
       </Grid>
       <Grid item lg={8}>
         {Locationcrumbs(location)}
@@ -43,7 +75,9 @@ export default function BookingInformation() {
         >
           <Grid item>
             <Typography variant="h5">
-              Best Restaurants Near Me in {location} (23057)
+              Best Restaurants Near Me in {location}
+              {" - "}
+              {hotelCount ? hotelCount : ""}
             </Typography>
           </Grid>
 
@@ -54,8 +88,8 @@ export default function BookingInformation() {
                 <Select
                   labelId="demo-multiple-name-label"
                   id="demo-multiple-name"
-                  value={sortData[0]}
-                  onChange={() => {}}
+                  value={sortedType}
+                  onChange={handleSortChange}
                   input={<OutlinedInput label="Name" />}
                 >
                   {sortData.map((name) => (
@@ -74,7 +108,12 @@ export default function BookingInformation() {
         </Grid>
 
         <Grid item>
-          <BookingCards location={location} />
+          <BookingCards
+            filteredTags={filteredTags}
+            location={location}
+            seachedHotel={seachedHotel}
+            sortedType={sortedType}
+          />
         </Grid>
       </Grid>
     </Grid>

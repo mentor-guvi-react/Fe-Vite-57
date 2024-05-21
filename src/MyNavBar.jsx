@@ -19,7 +19,7 @@ import { locationNames } from "./Constants";
 
 import { useNavigate } from "react-router-dom";
 
-export default function MyNavBar() {
+export default function MyNavBar({ handleSearchChange }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState("");
 
@@ -60,6 +60,7 @@ export default function MyNavBar() {
         <Grid item>
           <FormControl variant="outlined">
             <Input
+              onChange={handleSearchChange}
               id="input-with-icon-adornment"
               startAdornment={
                 <InputAdornment position="start">
@@ -173,3 +174,22 @@ const HeaderBottom = () => {
     </div>
   );
 };
+
+// const Child1 = ({handleChange}) => {
+//   return (
+//     <input onChange={handleChange}/>
+//   )
+// }
+
+// const Child2 = ({text}) => {
+//  return <h2>{text}</h2>
+// }
+
+// const Parent = () => {
+//  const [text ,setText] =  useState(0);
+//  const handleChange = () => {setText(12344)}
+//   return (
+//     <Child1 handleChange={handleChange}  />
+//     <Child2 text={text}/>
+//   )
+// }

@@ -7,12 +7,20 @@ import BookingInformation from "./BookingInformation";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
-  const HomePage = () => (
-    <Grid container width={"100%"}>
-      <MyNavBar />
-      <BookingInformation />
-    </Grid>
-  );
+  const HomePage = () => {
+    const [seachedHotel, setSeachedHotel] = useState();
+
+    const handleSearchChange = (e) => {
+      setSeachedHotel(e.target.value);
+    };
+
+    return (
+      <Grid container width={"100%"}>
+        <MyNavBar handleSearchChange={handleSearchChange} />
+        <BookingInformation seachedHotel={seachedHotel} />
+      </Grid>
+    );
+  };
 
   return (
     <BrowserRouter>

@@ -36,8 +36,6 @@ const BookingModal = ({ open, handleClose, selectedHotel = "" }) => {
 
   const username = localStorage.getItem("username");
 
-  console.log(BookingState, "BookingState");
-
   const handleDateChange = (date) => {
     const day = new Date(date).getDate();
     const year = new Date(date).getFullYear();
@@ -50,11 +48,7 @@ const BookingModal = ({ open, handleClose, selectedHotel = "" }) => {
   };
 
   const makeBooking = async () => {
-    console.log({
-      selectedHotel,
-      username,
-      ...BookingState,
-    });
+
     const {
       selectedDate = "",
       selectedSeats = "",

@@ -20,7 +20,12 @@ import { restaurant } from "./Constants";
 import BookingModal from "./BookingModal";
 import { useState } from "react";
 
-const BookingCards = ({ location }) => {
+const BookingCards = ({
+  location = "",
+  seachedHotel = "",
+  filteredTags = [],
+  sortedType,
+}) => {
   const [open, setOpen] = useState(false);
   const [selectedHotel, setselectedHotel] = useState("");
 
@@ -31,13 +36,81 @@ const BookingCards = ({ location }) => {
     setselectedHotel(id);
   };
 
+  let filteredData = restaurant[searchedLocation];
+
+  if (seachedHotel?.length) {
+    filteredData = filteredData.filter((eachHotel) => {
+      if (eachHotel.name.toLowerCase().includes(seachedHotel?.toLowerCase())) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  //  "Delia Hotel"   "Del"
+
+  // ['Italian', 'Mediterranean', '5 Star', 'A La Carte']   ['Italian', '5 Star']
+
+  if (filteredTags?.length) {
+    filteredData = filteredData.filter((eachHotel) => {
+      let matchFound = true;
+      eachHotel.tags.forEach((tag) => {
+        if (filteredTags.includes(tag)) {
+          matchFound = false;
+          return;
+        }
+      });
+      return !matchFound;
+    });
+  }
+
+  const handleRatingSort = () => {
+    filteredData.sort((a, b) => {
+      if (a.ratings > b.ratings) return 1;
+      return -1;
+    });
+  };
+
+  const handleLToH = () => {
+    filteredData.sort((a, b) => {
+      if (Number(a.price) > Number(b.price)) return 1;
+      return -1;
+    });
+  };
+
+  const handleHToL = () => {
+    filteredData.sort((a, b) => {
+      if (Number(a.price) > Number(b.price)) return -1;
+      return 1;
+    });
+  };
+
+  if (sortedType === "Ratings") {
+    handleRatingSort();
+  } else if (sortedType === "Price Low to High") {
+    handleLToH();
+  } else if (sortedType === "Price High to Low") {
+    handleHToL();
+  }
+
+  console.log(filteredData, "filteredData");
+
+  // [1, 4, 5, 3, 2, 3, 4, 6, 3, 2, 2].sort((a, b) => {
+  //   if (a > b) return 1;
+  //   return -1;
+  // });
+
+  // " "
+  // ' '
+  // ` `
+
   //   const obj = { a: {} };
   //   console.log(obj?.a?.b?.c, "obj.a.b.c");
 
   return (
     <>
       <Grid container spacing={4}>
-        {restaurant[searchedLocation]?.map((hotelDetail) => {
+        {filteredData?.map((hotelDetail) => {
           return (
             <Grid
               onClick={() => handleCardClick(hotelDetail.id)}
@@ -168,3 +241,8 @@ const BookingCards = ({ location }) => {
 // };
 
 export default BookingCards;
+
+// app ->
+//  searchedHotel  nav bar  -> search box
+// handleChange  <- onChangeevent  <- onChangeevent
+// searchedHotel ->   booking information -> booking cards
